@@ -4,18 +4,28 @@ use rand::Rng;
 
 fn main (){
     println!("Guess the number!");
-    println!("Your Input?");
-    let mut guess = String::new();
     let _correct = rand::thread_rng().gen_range(1..=10);
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line.");
-    let guess: u32 = guess.trim().replace(" ", "").parse().expect("Please Type A Valid Number!!!!!");
-    println!("You guessed: {guess}");
-    match guess.cmp(&_correct){
-        Ordering::Less => println!("{guess} is too small. Correct number is: {_correct}"),
-        Ordering::Greater => println!("{guess} is too big. Correct number is: {_correct}"),
-        Ordering::Equal => println!("{guess} is equal to: {_correct}, you win!")
+    let mut guesses: u32 = 0;
+    loop {
+        guesses += 1;
+        let mut guess = String::new();
+        println!("Your Input?");
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line.");
+        let guess: u32 = match guess.trim().replace(" ", "").parse() {
+            Ok(num) => num,
+            Err(_) => continue
+        };
+        println!("You guessed: {guess}");
+        match guess.cmp(&_correct){
+            Ordering::Less => println!("{guess} is a bit too low."),
+            Ordering::Greater => println!("{guess} is a bit too high."),
+            Ordering::Equal => {
+                println!("{guess} is the correct number!! You win with {guesses} guesses!");
+                break;
+            }
+        }
     }
     println!("Thanks for playing!");
 }
